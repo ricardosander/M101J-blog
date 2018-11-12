@@ -101,7 +101,7 @@ public class BlogController {
         }
 
         protected abstract void doHandle(final Request request, final Response response, final Writer writer)
-                throws IOException, TemplateException;
+        throws IOException, TemplateException;
 
     }
 
@@ -173,8 +173,7 @@ public class BlogController {
                         // duplicate user
                         root.put("username_error", "Username already in use, Please choose another");
                         template.process(root, writer);
-                    }
-                    else {
+                    } else {
                         // good user, let's start a session
                         String sessionID = sessionDAO.startSession(username);
                         System.out.println("Session ID is" + sessionID);
@@ -182,8 +181,7 @@ public class BlogController {
                         response.raw().addCookie(new Cookie("session", sessionID));
                         response.redirect("/welcome");
                     }
-                }
-                else {
+                } else {
                     // bad signup
                     System.out.println("User Registration did not validate");
                     template.process(root, writer);
@@ -195,7 +193,7 @@ public class BlogController {
         get(new FreemarkerBasedRoute("/signup", "signup.ftl") {
             @Override
             protected void doHandle(Request request, Response response, Writer writer)
-                    throws IOException, TemplateException {
+            throws IOException, TemplateException {
 
                 SimpleHash root = new SimpleHash();
 
@@ -211,9 +209,6 @@ public class BlogController {
                 template.process(root, writer);
             }
         });
-
-
-
 
         get(new FreemarkerBasedRoute("/welcome", "welcome.ftl") {
             @Override
@@ -417,8 +412,6 @@ public class BlogController {
                 template.process(root, writer);
             }
         });
-
-
 
         // allows the user to logout of the blog
         get(new FreemarkerBasedRoute("/logout", "signup.ftl") {
