@@ -2,8 +2,14 @@ package course;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Sorts;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
+import java.sql.Timestamp;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 public class BlogPostDAO {
@@ -17,9 +23,8 @@ public class BlogPostDAO {
     public Document findByPermalink(String permalink) {
 
         // XXX HW 3.2,  Work Here
-        Document post = null;
-
-
+        Bson query = Filters.eq("permalink", permalink);
+        Document post = postsCollection.find(query).first();
 
         return post;
     }
@@ -30,7 +35,13 @@ public class BlogPostDAO {
 
         // XXX HW 3.2,  Work Here
         // Return a list of DBObjects, each one a post from the posts collection
-        List<Document> posts = null;
+
+        Bson sort = Sorts.descending("date");
+
+        List<Document> posts = postsCollection.find()
+            .sort(sort)
+            .limit(limit)
+            .into(new LinkedList<Document>());
 
         return posts;
     }
@@ -56,8 +67,15 @@ public class BlogPostDAO {
         // - we created the permalink for you above.
 
         // Build the post object and insert it
-        Document post = new Document();
+        Document post = new Document("permalink", permalink)
+            .append("author", username)
+            .append("title", title)
+            .append("body", body)
+            .append("tags", tags)
+            .append("comments", Collections.emptyList())
+            .append("date", new Timestamp(System.currentTimeMillis()));
 
+        postsCollection.insertOne(post);
 
         return permalink;
     }
