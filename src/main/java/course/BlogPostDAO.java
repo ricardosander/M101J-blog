@@ -39,7 +39,6 @@ public class BlogPostDAO {
 
     public Document findByPermalink(String permalink) {
 
-        // XXX HW 3.2,  Work Here
         Bson query = Filters.eq("permalink", permalink);
         Document post = postsCollection.find(query).first();
 
@@ -56,6 +55,13 @@ public class BlogPostDAO {
             .into(new LinkedList<>());
 
         return posts;
+    }
+
+    public List<Document> findByTagDateDescending(final String tag) {
+        return postsCollection.find(Filters.eq("tags", tag))
+                       .sort(Sorts.descending("date"))
+                       .limit(10)
+                       .into(new ArrayList<Document>());
     }
 
     public String addPost(String title, String body, List tags, String username) {
@@ -81,14 +87,13 @@ public class BlogPostDAO {
         try {
 
             postsCollection.insertOne(post);
-
-            return permalink;
-
+            System.out.println("Inserting blog post with permalink " + permalink);
         } catch (Exception e) {
             System.out.println("Error inserting post");
             return null;
         }
 
+        return permalink;
     }
 
     public void addPostComment(final String name, final String email, final String body, final String permalink) {
